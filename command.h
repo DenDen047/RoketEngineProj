@@ -9,10 +9,11 @@ private:
     Serial _serial;
     bool _check();
 public:
-    float valve_on;
-    float wait_valve;
-    float pulse_time;
-    float wait_next;
+    int valve_on;
+    int wait_valve;
+    int pulse_time;
+    int wait_next;
+    int pulse_count;
     int repeat;
     GetCtrlCommand(PinName tx, PinName rx, int baud);
     ~GetCtrlCommand();

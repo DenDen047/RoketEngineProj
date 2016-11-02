@@ -12,7 +12,7 @@ GetCtrlCommand::GetCtrlCommand(
     char str[strlen];
 
     do {
-        _serial.printf("\n[ValveOn, WaitValve, PulseTime, WaitNext]\n");
+        _serial.printf("\n[ValveOn, WaitValve, PulseTime, WaitNext, PulseCount]\n");
         while(1) {
             if (!_serial.readable()) continue;
             c = _serial.getc();
@@ -20,21 +20,24 @@ GetCtrlCommand::GetCtrlCommand(
             if (c == ',' || c=='\n') {
                 switch (comma_cnt++) {
                     case 0:
-                        valve_on = atof(str);
+                        valve_on = atoi(str);
                         break;
                     case 1:
-                        wait_valve = atof(str);
+                        wait_valve = atoi(str);
                         break;
                     case 2:
-                        pulse_time = atof(str);
+                        pulse_time = atoi(str);
                         break;
                     case 3:
-                        wait_next = atof(str);
+                        wait_next = atoi(str);
+                        break;
+                    case 4:
+                        pulse_count = atoi(str);
                         break;
                     default:
                         break;
                 }
-                if (comma_cnt < 4) {
+                if (comma_cnt < 5) {
                     for (i = 0; i < strlen; i++) str[i] = ' ';
                     i = 0;
                     continue;
@@ -54,11 +57,12 @@ GetCtrlCommand::GetCtrlCommand(
 }
 
 bool GetCtrlCommand::_check () {
-    _serial.printf("\n[%f %f %f %f] -> ok? [y/n]\n",
+    _serial.printf("\n[%d %d %d %d %d] -> ok? [y/n]\n",
         valve_on,
         wait_valve,
         pulse_time,
-        wait_next
+        wait_next,
+        pulse_count
     );
     char c;
     while(1) {
@@ -66,6 +70,7 @@ bool GetCtrlCommand::_check () {
 
         c = _serial.getc();
         if (c == 'y') {
+            _serial.printf("\nGO!\n");
             return true;
         }
         else if (c == 'n') {
