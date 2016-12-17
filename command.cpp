@@ -22,31 +22,34 @@ GetCtrlCommand::GetCtrlCommand(
             if (c==',' || c=='\n') {
                 switch (comma_cnt++) {
                     case 0:
-                        valve_on = atoi(str);
+                        delay = atoi(str);
                         break;
                     case 1:
-                        valve_off = atoi(str);
+                        valve_on = atoi(str);
                         break;
                     case 2:
-                        injector_on = atoi(str);
+                        valve_off = atoi(str);
                         break;
                     case 3:
-                        injector_off = atoi(str);
+                        injector_on = atoi(str);
                         break;
                     case 4:
-                        spark_on = atoi(str);
+                        injector_off = atoi(str);
                         break;
                     case 5:
-                        spark_off = atoi(str);
+                        spark_on = atoi(str);
                         break;
                     case 6:
+                        spark_off = atoi(str);
+                        break;
+                    case 7:
                         repeat = atoi(str);
                         break;
                     default:
                         break;
                 }
 
-                if (comma_cnt < 7) {
+                if (comma_cnt < 8) {
                     for (i=0; i<strlen; i++) str[i] = ' ';
                     i = 0;
                     continue;
@@ -66,7 +69,8 @@ GetCtrlCommand::GetCtrlCommand(
 }
 
 bool GetCtrlCommand::_check () {
-    _serial.printf("\n[%d %d  %d %d  %d %d   %d] -> ok? [y/N]\n",
+    _serial.printf("\n[%ds  %d %d  %d %d  %d %d   %d] -> ok? [y/N]\n",
+        delay,
         valve_on,
         valve_off,
         injector_on,

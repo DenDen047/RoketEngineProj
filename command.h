@@ -9,6 +9,7 @@ private:
     Serial _serial;
     bool _check();
 public:
+    int delay;
     int valve_on;
     int valve_off;
     int injector_on;

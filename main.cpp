@@ -24,6 +24,7 @@ int main() {
 
         // start pulse
         for (i=0; i<command.repeat; i++) {
+            wait(command.delay);
             // valve on
             fuel_valve = 1;
             wait_ms(command.valve_on);
