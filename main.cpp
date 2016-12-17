@@ -2,7 +2,7 @@
 #include "command.h"
 
 Serial pc(USBTX, USBRX);    // tx, rx
-DigitalOut spark(LED1);
+DigitalOut spark(PA_9);
 DigitalOut fuel_valve(LED2);
 
 

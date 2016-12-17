@@ -20,24 +20,27 @@ GetCtrlCommand::GetCtrlCommand(
             if (c == ',' || c=='\n') {
                 switch (comma_cnt++) {
                     case 0:
-                        valve_on = atoi(str);
+                        delay = atoi(str);
                         break;
                     case 1:
-                        wait_valve = atoi(str);
+                        valve_on = atoi(str);
                         break;
                     case 2:
-                        pulse_time = atoi(str);
+                        wait_valve = atoi(str);
                         break;
                     case 3:
-                        wait_next = atoi(str);
+                        pulse_time = atoi(str);
                         break;
                     case 4:
+                        wait_next = atoi(str);
+                        break;
+                    case 5:
                         pulse_count = atoi(str);
                         break;
                     default:
                         break;
                 }
-                if (comma_cnt < 5) {
+                if (comma_cnt < 6) {
                     for (i = 0; i < strlen; i++) str[i] = ' ';
                     i = 0;
                     continue;
@@ -57,7 +60,8 @@ GetCtrlCommand::GetCtrlCommand(
 }
 
 bool GetCtrlCommand::_check () {
-    _serial.printf("\n[%d %d %d %d %d] -> ok? [y/n]\n",
+    _serial.printf("\n[%d %d %d %d %d %d] -> ok? [y/n]\n",
+        delay,
         valve_on,
         wait_valve,
         pulse_time,
