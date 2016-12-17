@@ -3,6 +3,7 @@
 GetCtrlCommand::GetCtrlCommand(
     PinName tx, PinName rx, int baud
 ) : _serial(tx, rx) {
+
     _serial.baud(baud);
 
     char c;
@@ -12,36 +13,41 @@ GetCtrlCommand::GetCtrlCommand(
     char str[strlen];
 
     do {
-        _serial.printf("\n[ValveOn, WaitValve, PulseTime, WaitNext, PulseCount]\n");
+        _serial.printf(
+            "\n[ValveOn, ValveOff, InjectorOn, InjectorOff, SparkOn, SparkOff, Repeat]\n");
         while(1) {
             if (!_serial.readable()) continue;
             c = _serial.getc();
 
-            if (c == ',' || c=='\n') {
+            if (c==',' || c=='\n') {
                 switch (comma_cnt++) {
                     case 0:
-                        delay = atoi(str);
-                        break;
-                    case 1:
                         valve_on = atoi(str);
                         break;
+                    case 1:
+                        valve_off = atoi(str);
+                        break;
                     case 2:
-                        wait_valve = atoi(str);
+                        injector_on = atoi(str);
                         break;
                     case 3:
-                        pulse_time = atoi(str);
+                        injector_off = atoi(str);
                         break;
                     case 4:
-                        wait_next = atoi(str);
+                        spark_on = atoi(str);
                         break;
                     case 5:
-                        pulse_count = atoi(str);
+                        spark_off = atoi(str);
+                        break;
+                    case 6:
+                        repeat = atoi(str);
                         break;
                     default:
                         break;
                 }
-                if (comma_cnt < 6) {
-                    for (i = 0; i < strlen; i++) str[i] = ' ';
+
+                if (comma_cnt < 7) {
+                    for (i=0; i<strlen; i++) str[i] = ' ';
                     i = 0;
                     continue;
                 }
@@ -60,13 +66,14 @@ GetCtrlCommand::GetCtrlCommand(
 }
 
 bool GetCtrlCommand::_check () {
-    _serial.printf("\n[%d %d %d %d %d %d] -> ok? [y/n]\n",
-        delay,
+    _serial.printf("\n[%d %d  %d %d  %d %d   %d] -> ok? [y/N]\n",
         valve_on,
-        wait_valve,
-        pulse_time,
-        wait_next,
-        pulse_count
+        valve_off,
+        injector_on,
+        injector_off,
+        spark_on,
+        spark_off,
+        repeat
     );
     char c;
     while(1) {
@@ -77,10 +84,9 @@ bool GetCtrlCommand::_check () {
             _serial.printf("\nGO!\n");
             return true;
         }
-        else if (c == 'n') {
+        else if (c == 'N') {
             return false;
         }
-        else {}
     }
 }
 

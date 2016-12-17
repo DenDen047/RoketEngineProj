@@ -10,10 +10,11 @@ private:
     bool _check();
 public:
     int valve_on;
-    int wait_valve;
-    int pulse_time;
-    int wait_next;
-    int pulse_count;
+    int valve_off;
+    int injector_on;
+    int injector_off;
+    int spark_on;
+    int spark_off;
     int repeat;
     GetCtrlCommand(PinName tx, PinName rx, int baud);
     ~GetCtrlCommand();

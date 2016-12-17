@@ -1,9 +1,10 @@
 #include "mbed.h"
 #include "command.h"
 
-Serial pc(USBTX, USBRX);    // tx, rx
-DigitalOut spark(PA_9);
-DigitalOut fuel_valve(LED2);
+DigitalOut fuel_valve(PA_2);
+DigitalOut injector(PA_12);
+DigitalOut spark(PA_8);
+DigitalOut led(LED1);
 
 
 int main() {
@@ -12,35 +13,32 @@ int main() {
     fuel_valve = 0;
     spark = 0;
     // power on
-    pc.baud(9600);
-    pc.printf("Hello, Naoya!\n\n");
+    led = 1;
 
     while(1) {
         fuel_valve = 0;
         spark = 0;
         // wait command from computer
-        GetCtrlCommand command(USBTX, USBRX, 9600);
-        pc.printf("\n%d %d %d %d %d\n",
-            command.valve_on,
-            command.wait_valve,
-            command.pulse_time,
-            command.wait_next,
-            command.pulse_count
-        );
+        GetCtrlCommand command(D1, D0, 115200);
+        // GetCtrlCommand command(USBTX, USBRX, 9600);
 
         // start pulse
-        for (i=0; i<command.pulse_count; i++) {
-            // value on
+        for (i=0; i<command.repeat; i++) {
+            // valve on
             fuel_valve = 1;
             wait_ms(command.valve_on);
             fuel_valve = 0;
-            wait_ms(command.wait_valve);
+            wait_ms(command.valve_off);
+            // injector on
+            injector = 1;
+            wait_ms(command.injector_on);
+            injector = 0;
+            wait_ms(command.injector_off);
             // spark!
             spark = 1;
-            wait_ms(command.pulse_time);
+            wait_ms(command.spark_on);
             spark = 0;
-            // wait
-            wait_ms(command.wait_next);
+            wait_ms(command.spark_off);
         }
 
         // end
